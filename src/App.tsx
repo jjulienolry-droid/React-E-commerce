@@ -3,7 +3,8 @@ import { MainLayout } from "./components/layout/MainLayout"
 import { Home } from "./pages/Home"
 import { Profile } from "./pages/Profile"
 import { CartPage } from "./pages/CartPage"
-import { ProductDetail } from "./components/products/ProductDetail"
+import { AuthPage } from "./pages/AuthPage"
+import { ProductDetailPage } from "./pages/ProductDetailPage"
 import { Product } from "./types/types"
 
 interface Category {
@@ -13,7 +14,7 @@ interface Category {
   icon?: string
 }
 
-type PageType = "home" | "profile" | "cart" | "product"
+type PageType = "home" | "profile" | "cart" | "product" | "auth"
 
 function App()
 {
@@ -63,18 +64,21 @@ function App()
     {
         switch (currentPage)
         {
+            case "auth":
+                return <AuthPage />
             case "profile":
                 return <Profile />
             case "cart":
                 return <CartPage />
             case "product":
                 return selectedProduct ? (
-                    <ProductDetail
+                    <ProductDetailPage
                         product={selectedProduct}
                         onAddToCart={(product, quantity) =>
                         {
                             setCartCount(cartCount + quantity)
                         }}
+                        onBack={handleNavigateHome}
                     />
                 ) : null
             case "home":

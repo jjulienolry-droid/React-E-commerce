@@ -32,46 +32,37 @@ export default [
         },
 
         rules: {
-            /* ==== React ==== */
             ...reactPlugin.configs.recommended.rules,
 
-            /* ==== A11Y ==== */
             ...jsxA11y.configs.recommended.rules,
 
-            /* ==== React Hooks ==== */
             "react-hooks/rules-of-hooks": "error",
             "react-hooks/exhaustive-deps": "warn",
 
-            /* ==== Naming Conventions TypeScript ==== */
             "@typescript-eslint/naming-convention": [
                 "error",
-                //! j'ai changé une règle ou 2 car le nommage ne convenait pas pour les composants react utilisé
-                /* Variables, fonctions classiques */
+
                 {
                     selector: "variableLike",
-                    format: ["strictCamelCase", "UPPER_CASE"],
+                    format: ["strictCamelCase", "UPPER_CASE", "StrictPascalCase"],
                 },
 
-                /* Fonctions (autorise composants React en PascalCase) */
                 {
                     selector: "function",
                     format: ["strictCamelCase", "StrictPascalCase"],    
                 },
 
-                /* Méthodes */
                 {
                     selector: "method",
                     format: ["strictCamelCase"],
                     leadingUnderscore: "allow",
                 },
 
-                /* Types, interfaces, enums */
                 {
                     selector: "typeLike",
                     format: ["StrictPascalCase"],
                 },
 
-                /* Paramètres */
                 {
                     selector: "parameter",
                     format: ["strictCamelCase"],
@@ -79,7 +70,6 @@ export default [
                 },
             ],
 
-            /* ==== Style ==== */
             "brace-style": ["error", "allman", { allowSingleLine: true }],
             indent: ["error", 4, { SwitchCase: 1 }],
             "no-extra-semi": ["error"],
@@ -99,7 +89,6 @@ export default [
             "no-console": ["error", { allow: ["error", "trace"] }],
             "no-var": "warn",
 
-            /* ==== React ==== */
             "react/react-in-jsx-scope": "off",
             "react/prop-types": "off",
         },

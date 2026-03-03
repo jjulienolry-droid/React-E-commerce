@@ -30,7 +30,7 @@ export const BlogCard: React.FC<BlogCardProps> = ({
                 src={image}
                 alt={title}
                 width="100%"
-                height="200px"
+                height="280px"
                 objectFit="cover"
                 bg="gray.200"
             />
