@@ -21,6 +21,8 @@ interface HeaderProps {
   onProfileClick?: () => void
   onHomeClick?: () => void
   isAuthenticated?: boolean
+  onCategoryClick?: (categoryName: string) => void
+    minimalHeader?: boolean
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -32,16 +34,31 @@ export const Header: React.FC<HeaderProps> = ({
     onProfileClick,
     onHomeClick,
     isAuthenticated = false,
+    onCategoryClick,
+    minimalHeader = false,
 }) =>
 {
     const [searchQuery, setSearchQuery] = React.useState("")
 
-    // imported image assets (handled by Vite)
+    if (minimalHeader) {
+        return (
+            <Box as="header" bg="white" boxShadow="md" py={4} position="sticky" top={0} zIndex={100}>
+                <Box px={6}>
+                    <HStack gap={2} cursor="pointer" onClick={onHomeClick} align="center">
+                        <img src={logoSrc} style={{width: "40px", height: "40px", objectFit: "cover"}} alt="logo" />
+                        <Heading as="h1" size="lg" color="gray.900">
+                            {siteName}
+                        </Heading>
+                    </HStack>
+                </Box>
+            </Box>
+        )
+    }
+
     return (
         <Box as="header" bg="white" boxShadow="md" py={4} position="sticky" top={0} zIndex={100}>
             <Box px={6}>
                 <HStack gap={6} justify="space-between" align="center">
-                    {/* Logo + title */}
                     <HStack gap={2} cursor="pointer" onClick={onHomeClick} align="center">
                         <img src={logoSrc} style={{width: "40px", height: "40px", objectFit: "cover"}} alt="logo" />
                         <Heading as="h1" size="lg" color="gray.900">
@@ -49,7 +66,6 @@ export const Header: React.FC<HeaderProps> = ({
                         </Heading>
                     </HStack>
 
-                    {/* categories */}
                     <HStack gap={2} overflowX="auto" ml="5%">
                         {categories.map((cat) => (
                             <Button
@@ -58,14 +74,14 @@ export const Header: React.FC<HeaderProps> = ({
                                 size="sm"
                                 fontWeight="normal"
                                 _hover={{ bg: "gray.100" }}
+                                onClick={() => onCategoryClick?.(cat.name)}
                             >
                                 {cat.name}
                             </Button>
                         ))}
                     </HStack>
 
-                    {/* recherche */}
-                    <Box flex={1} maxW="600px" ml={8} position="relative">
+                    <Box flex={0.6} maxW="350px" ml={4} position="relative">
                         <Input
                             placeholder="Rechercher des produits..."
                             value={searchQuery}

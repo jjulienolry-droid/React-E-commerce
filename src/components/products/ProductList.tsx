@@ -1,7 +1,7 @@
 import React from "react"
+import { SimpleGrid, Text, Box } from "@chakra-ui/react"
 import { ProductCard } from "./ProductCard"
 import { Loader } from "../common/Loader"
-import { SimpleGrid, Center, Text } from "@chakra-ui/react"
 import { Product } from "../../types/types"
 
 interface ProductListProps {
@@ -17,22 +17,23 @@ export const ProductList: React.FC<ProductListProps> = ({
     loading = false,
     onAddToCart,
     onViewDetails,
-    columns = 4,
+    columns = 3,
 }) =>
 {
-    if (loading) return <Center><Loader size="large" /></Center>
+    if (loading) {
+        return <Loader />
+    }
 
-    if (products.length === 0)
-    {
+    if (!products.length) {
         return (
-            <Center py={10}>
-                <Text fontSize="lg" color="gray.500">Aucun produit trouvé</Text>
-            </Center>
+            <Box textAlign="center" py={10}>
+                <Text color="gray.500">Aucun produit trouvé</Text>
+            </Box>
         )
     }
 
     return (
-        <SimpleGrid columns={{ base: 1, sm: 2, md: columns }} gap={4} w="100%">
+        <SimpleGrid columns={{ base: 1, md: 2, lg: columns }} gap={6}>
             {products.map((product) => (
                 <ProductCard
                     key={product.id}

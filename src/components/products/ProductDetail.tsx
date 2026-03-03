@@ -76,7 +76,6 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
         }
       `}</style>
 
-            {/* Notification Toast */}
             {showNotification && (
                 <Box
                     position="fixed"
@@ -104,37 +103,40 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                 </Box>
             )}
             <Container maxW="container.xl" py={8}>
-                {/* Breadcrumb */}
                 <Text mb={6} fontSize="sm" color="gray.600">
           Accueil / {product.name}
                 </Text>
 
-                {/* Grille principale */}
                 <Grid templateColumns={{ base: "1fr", md: "1fr 1fr" }} gap={10}>
-                    {/* Image du produit */}
                     <Box>
-                        <Box display="flex" alignItems="center" justifyContent="center" bg="gray.100" borderRadius="lg" p={4}>
+                        <Box
+                            display="flex"
+                            alignItems="center"
+                            justifyContent="center"
+                            bg="white"
+                            borderRadius="xl"
+                            p={6}
+                            border="1px solid"
+                            borderColor="gray.200"
+                            boxShadow="sm"
+                            minH={{ base: "350px", md: "500px" }}
+                        >
                             <Image
                                 src={product.image}
                                 alt={product.name}
                                 maxW="100%"
-                                maxH={{ base: "320px", md: "560px" }}
+                                maxH={{ base: "320px", md: "460px" }}
                                 objectFit="contain"
                                 borderRadius="md"
                             />
                         </Box>
                     </Box>
 
-                    {/* Informations du produit */}
                     <VStack align="stretch" gap={4}>
-                        {/* Catégorie hidden on detail page */}
-
-                        {/* Nom du produit */}
                         <Heading as="h1" size="2xl" color="gray.800">
                             {product.name}
                         </Heading>
 
-                        {/* Rating et avis */}
                         <HStack gap={2}>
                             <Text fontSize="lg" color="yellow.500">
                                 {"★".repeat(Math.floor(product.rating))}
@@ -147,14 +149,12 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
 
                         <Box borderBottomWidth={1} borderColor="gray.200" py={3} />
 
-                        {/* Prix */}
                         <HStack gap={3} align="baseline">
                             <Text fontSize="3xl" fontWeight="bold" color="gray.800">
                 ${product.price.toFixed(2)}
                             </Text>
                         </HStack>
 
-                        {/* Disponibilité */}
                         <HStack>
                             {product.stock > 0 ? (
                                 <Box bg="green.100" color="green.800" px={3} py={1} borderRadius="md" fontSize="sm" fontWeight="semibold">
@@ -169,7 +169,6 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
 
                         <Box borderBottomWidth={1} borderColor="gray.200" py={3} />
 
-                        {/* Description */}
                         <Box>
                             <Heading as="h3" size="md" mb={3} color="gray.800">
                 Description
@@ -181,7 +180,6 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
 
                         <Box borderBottomWidth={1} borderColor="gray.200" py={3} />
 
-                        {/* Sélecteur de quantité */}
                         <Box>
                             <Text fontSize="sm" fontWeight="semibold" mb={2} color="gray.700">
                 Quantité
@@ -214,7 +212,6 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                             </HStack>
                         </Box>
 
-                        {/* Bouton ajouter au panier */}
                         <HStack gap={4} pt={4}>
                             <ChakraButton
                                 colorScheme="blue"
@@ -226,8 +223,6 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                 Ajouter au panier
                             </ChakraButton>
                         </HStack>
-
-                        {/* Informations supplémentaires removed as requested */}
                     </VStack>
                 </Grid>
             </Container>

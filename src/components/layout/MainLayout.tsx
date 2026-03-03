@@ -20,6 +20,8 @@ interface MainLayoutProps {
   onProfileClick?: () => void
   onHomeClick?: () => void
   isAuthenticated?: boolean
+  onCategoryClick?: (categoryName: string) => void
+    minimalHeader?: boolean
 }
 
 export const MainLayout: React.FC<MainLayoutProps> = ({
@@ -32,6 +34,8 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
     onProfileClick,
     onHomeClick,
     isAuthenticated = false,
+    onCategoryClick,
+    minimalHeader = false,
 }) =>
 {
     return (
@@ -49,6 +53,8 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                     if (typeof onHomeClick === "function") onHomeClick()
                 }}
                 isAuthenticated={isAuthenticated}
+                onCategoryClick={onCategoryClick}
+                minimalHeader={minimalHeader}
             />
 
             {/* Contenu principal */}

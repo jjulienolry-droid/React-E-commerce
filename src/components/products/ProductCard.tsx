@@ -8,16 +8,7 @@ import {
     VStack,
     Button as ChakraButton,
 } from "@chakra-ui/react"
-import { Button } from "../common/Button"
-
-interface Product {
-  id: number
-  name: string
-  price: number
-  image: string
-  rating: number
-  discount?: number
-}
+import { Product } from "../../types/types"
 
 interface ProductCardProps {
   product: Product
@@ -47,14 +38,13 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             cursor="pointer"
             onClick={() => onViewDetails?.(product)}
         >
-            <Box position="relative" overflow="hidden" bg="gray.100">
+            <Box position="relative" overflow="hidden" bg="white" display="flex" alignItems="center" justifyContent="center" p={4}>
                 <Image
                     src={product.image}
                     alt={product.name}
-                    w="100%"
-                    h={{ base: "280px", md: "340px" }}
-                    objectFit="cover"
-                    objectPosition="center 35%"
+                    maxW="100%"
+                    maxH={{ base: "240px", md: "280px" }}
+                    objectFit="contain"
                     transition="transform 0.25s ease, filter 0.25s ease"
                     _groupHover={{ filter: "grayscale(100%) brightness(60%) contrast(90%)", transform: "scale(1.06)" }}
                 />
@@ -74,19 +64,25 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             ${product.price.toFixed(2)}
                     </Text>
                 </HStack>
-                <Box pt={2} w="100%">
-                    <Button
-                        variant="primary"
-                        size="small"
+                <Box pt={3} w="100%">
+                    <ChakraButton
+                        w="100%"
+                        size="md"
+                        bg="gray.600"
+                        color="white"
+                        fontWeight="semibold"
+                        borderRadius="md"
+                        _hover={{ bg: "gray.700", transform: "translateY(-1px)", boxShadow: "md" }}
+                        _active={{ bg: "gray.800", transform: "translateY(0)" }}
+                        transition="all 0.2s"
                         onClick={(e) =>
                         {
                             e.stopPropagation()
                             onAddToCart?.(product)
                         }}
-                        style={{ width: "100%" }}
                     >
-            Ajouter au panier
-                    </Button>
+                        Ajouter au panier
+                    </ChakraButton>
                 </Box>
             </VStack>
         </Box>

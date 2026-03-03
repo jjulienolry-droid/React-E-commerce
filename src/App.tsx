@@ -1,5 +1,6 @@
 import { useState } from "react"
 import { MainLayout } from "./components/layout/MainLayout"
+import { useAuth } from "./context/AuthContext"
 import { Home } from "./pages/Home"
 import { Profile } from "./pages/Profile"
 import { CartPage } from "./pages/CartPage"
@@ -21,12 +22,16 @@ function App()
     const [currentPage, setCurrentPage] = useState<PageType>("home")
     const [cartCount, setCartCount] = useState(0)
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+    const { isAuthenticated } = useAuth()
+    const isAuthPageVisible = currentPage === "auth" || !isAuthenticated
 
     // Catégories partagées
     const categories: Category[] = [
         { id: 1, name: "Cubes antistress", count: 24 },
-        { id: 2, name: "FIdgets Spinners", count: 56 },
-        { id: 3, name: "Boules de décompression", count: 32 },
+        { id: 2, name: "Fidgets Spinners", count: 56 },
+        { id: 3, name: "Boules anti-stress", count: 32 },
+        { id: 0, name: "tous les produits", count: 112 },
     ]
 
     const navLinks = [
@@ -37,19 +42,28 @@ function App()
 
     const handleNavigateToProfile = () =>
     {
-        setCurrentPage("profile")
+        if (!isAuthenticated) {
+            setCurrentPage("auth")
+        } else {
+            setCurrentPage("profile")
+        }
         window.scrollTo(0, 0)
     }
 
     const handleNavigateToCart = () =>
     {
-        setCurrentPage("cart")
+        if (!isAuthenticated) {
+            setCurrentPage("auth")
+        } else {
+            setCurrentPage("cart")
+        }
         window.scrollTo(0, 0)
     }
 
     const handleNavigateHome = () =>
     {
         setCurrentPage("home")
+        setSelectedCategory(null)
         window.scrollTo(0, 0)
     }
 
@@ -60,8 +74,19 @@ function App()
         window.scrollTo(0, 0)
     }
 
+    const handleCategoryClick = (categoryName: string) =>
+    {
+        setSelectedCategory(categoryName)
+        setCurrentPage("home")
+        window.scrollTo(0, 0)
+    }
+
     const renderPage = () =>
     {
+        if (!isAuthenticated && currentPage !== "auth") {
+            return <AuthPage />
+        }
+
         switch (currentPage)
         {
             case "auth":
@@ -83,7 +108,7 @@ function App()
                 ) : null
             case "home":
             default:
-                return <Home onAddToCart={() => setCartCount(cartCount + 1)} onViewDetails={handleViewProduct} />
+                return <Home onAddToCart={() => setCartCount(cartCount + 1)} onViewDetails={handleViewProduct} categoryFilter={selectedCategory} />
         }
     }
 
@@ -96,7 +121,9 @@ function App()
             onCartClick={handleNavigateToCart}
             onProfileClick={handleNavigateToProfile}
             onHomeClick={handleNavigateHome}
-            isAuthenticated={false}
+            isAuthenticated={isAuthenticated}
+            onCategoryClick={handleCategoryClick}
+            minimalHeader={isAuthPageVisible}
         >
             {renderPage()}
         </MainLayout>

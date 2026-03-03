@@ -46,7 +46,7 @@ export const AuthPage: React.FC = () =>
                     setError("Les mots de passe ne correspondent pas")
                     return
                 }
-                await register(email, password, firstName, lastName)
+                await register(firstName, lastName, email, password)
             }
         }
         catch (err)
@@ -91,7 +91,7 @@ export const AuthPage: React.FC = () =>
                         {mode === "signup" && (
                             <HStack w="100%" gap={4}>
                                 <Input
-                                    placeholder="Pr\u00e9nom"
+                                    placeholder="Prénom"
                                     value={firstName}
                                     onChange={(e) => setFirstName(e.target.value)}
                                     required

@@ -35,7 +35,7 @@ export const Footer: React.FC = () =>
             {/* social bar below */}
             <Box mt={10} borderTopWidth={1} borderColor="gray.200" pt={6} maxW="container.xl" mx="auto" px={6}>
                 <Stack direction={{ base: "column", md: "row" }} gap={4} justify="space-between" align="center">
-                    <Text fontSize="sm">© 2024 E-Commerce. Tous droits réservés.</Text>
+                    <Text fontSize="sm">© 2026 La Place Zen. Tous droits réservés.</Text>
                     <HStack gap={4}>
                         <Link href="#facebook">Facebook</Link>
                         <Link href="#twitter">Twitter</Link>

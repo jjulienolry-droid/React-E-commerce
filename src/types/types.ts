@@ -26,8 +26,11 @@ export interface CartItem {
 
 export interface User {
   id: number;
-  name: string;
-  email: string;
+  name?: string;
+  email?: string;
+  firstName?: string;
+  lastName?: string;
+  emailAddress?: string;
   avatar?: string;
   phone?: string;
   createdAt?: string;
