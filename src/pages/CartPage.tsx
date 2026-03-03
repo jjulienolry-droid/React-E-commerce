@@ -13,16 +13,32 @@ interface CartItemData {
 interface Cart {
   id: number
   UserId: number
-  Products?: Array<{ id: number; name: string; price: number; CartProduct?: { quantity: number } }>
+    Products?: Array<{ id: number; name: string; price: number; CartProduct?: { quantity: number }; Product_Cart?: { quantity: number } }>
 }
 
-export const CartPage: React.FC = () =>
+interface CartPageProps {
+    onContinueShopping?: () => void
+    onCartUpdated?: () => void | Promise<void>
+}
+
+export const CartPage: React.FC<CartPageProps> = ({ onContinueShopping, onCartUpdated }) =>
 {
     const { user } = useAuth()
     const [items, setItems] = useState<CartItemData[]>([])
     const [loading, setLoading] = useState(true)
     const [error, setError] = useState<string | null>(null)
     const [notification, setNotification] = useState<string | null>(null)
+
+    const mapCartToItems = (cart: Cart): CartItemData[] => {
+        if (!cart.Products || !Array.isArray(cart.Products)) return []
+
+        return cart.Products.map((product: any) => ({
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            quantity: product.CartProduct?.quantity || product.Product_Cart?.quantity || 1,
+        }))
+    }
 
     useEffect(() => {
         if (!user?.id) {
@@ -35,18 +51,7 @@ export const CartPage: React.FC = () =>
                 setLoading(true)
                 setError(null)
                 const cart = await cartService.getOrCreateCart(user.id)
-
-                if (cart.Products && Array.isArray(cart.Products)) {
-                    const cartItems = cart.Products.map((product: any) => ({
-                        id: product.id,
-                        name: product.name,
-                        price: product.price,
-                        quantity: product.CartProduct?.quantity || 1,
-                    }))
-                    setItems(cartItems)
-                } else {
-                    setItems([])
-                }
+                setItems(mapCartToItems(cart))
             }
             catch (err) {
                 setError(err instanceof Error ? err.message : "Erreur de chargement du panier")
@@ -66,8 +71,9 @@ export const CartPage: React.FC = () =>
 
         try {
             const cart = await cartService.getOrCreateCart(user.id)
-            await cartService.removeProductFromCart(cart.id, itemId)
-            setItems(items.filter((item) => item.id !== itemId))
+            const updatedCart = await cartService.removeProductFromCart(cart.id, itemId, true)
+            setItems(mapCartToItems(updatedCart as unknown as Cart))
+            await onCartUpdated?.()
             setNotification("Produit supprimé")
             setTimeout(() => setNotification(null), 2000)
         }
@@ -84,12 +90,25 @@ export const CartPage: React.FC = () =>
 
         if (quantity <= 0)
         {
-            handleRemoveItem(itemId)
+            await handleRemoveItem(itemId)
         }
         else
         {
             try {
-                setItems(items.map((item) => (item.id === itemId ? { ...item, quantity } : item)))
+                const currentItem = items.find((item) => item.id === itemId)
+                if (!currentItem) return
+
+                const cart = await cartService.getOrCreateCart(user.id)
+
+                if (quantity > currentItem.quantity) {
+                    const updatedCart = await cartService.addProductToCart(cart.id, itemId)
+                    setItems(mapCartToItems(updatedCart as unknown as Cart))
+                } else if (quantity < currentItem.quantity) {
+                    const updatedCart = await cartService.removeProductFromCart(cart.id, itemId)
+                    setItems(mapCartToItems(updatedCart as unknown as Cart))
+                }
+
+                await onCartUpdated?.()
             }
             catch (err) {
                 const msg = err instanceof Error ? err.message : "Erreur lors de la mise à jour"
@@ -137,7 +156,7 @@ export const CartPage: React.FC = () =>
             Votre panier est vide
                     </Heading>
                     <Text color="gray.600">Commencez vos achats dès maintenant!</Text>
-                    <Button colorScheme="blue" size="lg">
+                    <Button colorScheme="blue" size="lg" onClick={onContinueShopping}>
             Continuer vos achats
                     </Button>
                 </VStack>

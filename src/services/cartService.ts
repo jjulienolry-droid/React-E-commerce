@@ -43,10 +43,14 @@ export const cartService = {
         return updatedCart
     },
 
-    async removeProductFromCart(cartId: number, productId: number): Promise<Cart> {
+    async removeProductFromCart(cartId: number, productId: number, removeAll = false): Promise<Cart> {
         console.log(" [CART SERVICE] Removing product from cart...", { cartId, productId })
 
-        const response = await fetchAuth(API.cartProduct(cartId, productId), {
+        const deleteUrl = removeAll
+            ? `${API.cartProduct(cartId, productId)}?all=true`
+            : API.cartProduct(cartId, productId)
+
+        const response = await fetchAuth(deleteUrl, {
             method: "DELETE",
         })
 

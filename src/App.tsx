@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { MainLayout } from "./components/layout/MainLayout"
 import { useAuth } from "./context/AuthContext"
 import { Home } from "./pages/Home"
@@ -26,6 +26,30 @@ function App()
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
     const { isAuthenticated, user, token } = useAuth()
     const isAuthPageVisible = currentPage === "auth" || !isAuthenticated
+
+    const syncCartCount = useCallback(async () =>
+    {
+        if (!user?.id || !token)
+        {
+            setCartCount(0)
+            return
+        }
+
+        try
+        {
+            const count = await cartService.getCartCount(user.id)
+            setCartCount(count)
+        }
+        catch (err)
+        {
+            console.error("Erreur lors de la synchronisation du panier:", err)
+        }
+    }, [user?.id, token])
+
+    useEffect(() =>
+    {
+        syncCartCount()
+    }, [syncCartCount])
 
     const categories: Category[] = [
         { id: 1, name: "Cubes antistress", count: 24 },
@@ -85,14 +109,14 @@ function App()
             try {
                 const cart = await cartService.getOrCreateCart(user.id)
                 await cartService.addProductToCart(cart.id, product.id)
-                setCartCount(cartCount + 1)
+                await syncCartCount()
             }
             catch (err) {
                 console.error("Erreur lors de l'ajout au panier:", err)
             }
         }
         else {
-            setCartCount(cartCount + 1)
+            setCartCount((prevCount) => prevCount + 1)
         }
     }
 
@@ -116,14 +140,14 @@ function App()
             case "profile":
                 return <Profile />
             case "cart":
-                return <CartPage />
+                return <CartPage onContinueShopping={handleNavigateHome} onCartUpdated={syncCartCount} />
             case "product":
                 return selectedProduct ? (
                     <ProductDetailPage
                         product={selectedProduct}
                         onAddToCart={(product, quantity) =>
                         {
-                            setCartCount(cartCount + quantity)
+                            setCartCount((prevCount) => prevCount + quantity)
                         }}
                         onBack={handleNavigateHome}
                     />
