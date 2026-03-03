@@ -5,7 +5,7 @@ import { BlogHomePage } from "../components/blog/BlogHomePage"
 import { Avis } from "../components/common/Avis"
 import { Product } from "../types/types"
 
-export const Home: React.FC<{ onAddToCart?: () => void; onViewDetails?: (product: Product) => void; categoryFilter?: string | null }> = ({ onAddToCart, onViewDetails, categoryFilter }) =>
+export const Home: React.FC<{ onAddToCart?: (product: Product) => void; onViewDetails?: (product: Product) => void; categoryFilter?: string | null }> = ({ onAddToCart, onViewDetails, categoryFilter }) =>
 {
 
     return (

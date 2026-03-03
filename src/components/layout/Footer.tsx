@@ -5,7 +5,6 @@ export const Footer: React.FC = () =>
 {
     return (
         <Box as="footer" bg="gray.100" color="gray.700" py={10}>
-            {/* link sections arranged in responsive grid */}
             <SimpleGrid columns={{ base: 1, md: 3 }} gap={8} maxW="container.xl" mx="auto" px={6}>
                 <VStack align="start" gap={2}>
                     <Text fontWeight="bold">À propos</Text>

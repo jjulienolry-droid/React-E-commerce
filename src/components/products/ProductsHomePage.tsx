@@ -20,7 +20,6 @@ const useFetchProducts = () =>
             .then((data) =>
             {
                 if (!mounted) return
-                // Transform images to use API_BASE if needed
                 const transformed = data.map(p => ({
                     ...p,
                     image: p.image && !p.image.startsWith("http")
@@ -47,7 +46,7 @@ const useFetchProducts = () =>
 }
 
 interface ProductsHomePageProps {
-    onAddToCart?: () => void
+    onAddToCart?: (product: Product) => void
     onViewDetails?: (product: Product) => void
     categoryFilter?: string | null
 }
@@ -115,7 +114,7 @@ export const ProductsHomePage: React.FC<ProductsHomePageProps> = ({ onAddToCart,
     const handleAddToCart = (product: Product) =>
     {
         setCart([...cart, product])
-        onAddToCart?.()
+        onAddToCart?.(product)
     }
 
     const handleViewDetails = (product: Product) =>

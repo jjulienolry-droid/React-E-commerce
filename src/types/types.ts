@@ -1,6 +1,3 @@
-/**
- * Types partagés pour les composants e-commerce
- */
 
 export interface Product {
   id: number;

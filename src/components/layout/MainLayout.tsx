@@ -40,7 +40,6 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
 {
     return (
         <Box id="main-container" minH="100vh" display="flex" flexDirection="column">
-            {/* En-tête */}
             <Header
                 siteName="La Place Zen"
                 categories={categories}
@@ -57,10 +56,8 @@ export const MainLayout: React.FC<MainLayoutProps> = ({
                 minimalHeader={minimalHeader}
             />
 
-            {/* Contenu principal */}
             <Box flex={1}>{children}</Box>
 
-            {/* Pied de page */}
             <Footer />
         </Box>
     )

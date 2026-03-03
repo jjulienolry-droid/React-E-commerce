@@ -104,7 +104,6 @@ export const Header: React.FC<HeaderProps> = ({
                         </Box>
                     </Box>
 
-                    {/* icons actions */}
                     <HStack gap={4} mr={4}>
                         <Box
                             position="relative"

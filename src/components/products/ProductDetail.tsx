@@ -36,21 +36,18 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
     {
         setError(null)
 
-        // Validation: article vide
         if (quantity <= 0) {
             setError(" Article vide - Veuillez sélectionner une quantité")
             setTimeout(() => setError(null), 3000)
             return
         }
 
-        // API call si authentifié
         if (user?.id && token) {
             setLoading(true)
             try {
                 const cart = await cartService.getOrCreateCart(user.id)
                 await cartService.addProductToCart(cart.id, product.id)
                 
-                // Show success notification
                 onAddToCart?.(product, quantity)
                 setShowNotification(true)
                 setIsExiting(false)
@@ -70,7 +67,6 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
             }
         }
         else {
-            // Fallback sans API
             onAddToCart?.(product, quantity)
             setShowNotification(true)
             setIsExiting(false)

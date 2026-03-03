@@ -58,7 +58,6 @@ export const productService = {
         const list = Array.isArray(data) ? data : data.value || data
         const mapped: Product[] = list.map(mapResponseToProduct)
 
-        // Client-side filtering
         let filtered = mapped
         if (filters?.priceMin !== undefined) {
             filtered = filtered.filter((p) => p.price >= filters.priceMin!)

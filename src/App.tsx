@@ -7,6 +7,7 @@ import { CartPage } from "./pages/CartPage"
 import { AuthPage } from "./pages/AuthPage"
 import { ProductDetailPage } from "./pages/ProductDetailPage"
 import { Product } from "./types/types"
+import { cartService } from "./services/cartService"
 
 interface Category {
   id: number
@@ -23,10 +24,9 @@ function App()
     const [cartCount, setCartCount] = useState(0)
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-    const { isAuthenticated } = useAuth()
+    const { isAuthenticated, user, token } = useAuth()
     const isAuthPageVisible = currentPage === "auth" || !isAuthenticated
 
-    // Catégories partagées
     const categories: Category[] = [
         { id: 1, name: "Cubes antistress", count: 24 },
         { id: 2, name: "Fidgets Spinners", count: 56 },
@@ -74,6 +74,28 @@ function App()
         window.scrollTo(0, 0)
     }
 
+    const handleAddToCartFromHome = async (product: Product) =>
+    {
+        if (!product) {
+            console.error("Produit invalide")
+            return
+        }
+
+        if (user?.id && token) {
+            try {
+                const cart = await cartService.getOrCreateCart(user.id)
+                await cartService.addProductToCart(cart.id, product.id)
+                setCartCount(cartCount + 1)
+            }
+            catch (err) {
+                console.error("Erreur lors de l'ajout au panier:", err)
+            }
+        }
+        else {
+            setCartCount(cartCount + 1)
+        }
+    }
+
     const handleCategoryClick = (categoryName: string) =>
     {
         setSelectedCategory(categoryName)
@@ -108,7 +130,7 @@ function App()
                 ) : null
             case "home":
             default:
-                return <Home onAddToCart={() => setCartCount(cartCount + 1)} onViewDetails={handleViewProduct} categoryFilter={selectedCategory} />
+                return <Home onAddToCart={handleAddToCartFromHome} onViewDetails={handleViewProduct} categoryFilter={selectedCategory} />
         }
     }
 
@@ -116,7 +138,7 @@ function App()
         <MainLayout
             navLinks={navLinks}
             categories={categories}
-            onSearchChange={(query) => { /* search handled */ }}
+            onSearchChange={(query) => {}}
             cartCount={cartCount}
             onCartClick={handleNavigateToCart}
             onProfileClick={handleNavigateToProfile}
