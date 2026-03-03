@@ -11,22 +11,13 @@ import {
     Button as ChakraButton,
     Input,
 } from "@chakra-ui/react"
-
-interface Product {
-  id: number
-  name: string
-  price: number
-  description: string
-  image: string
-  rating: number
-  stock: number
-  category: string
-  discount?: number
-}
+import { useAuth } from "../../context/AuthContext"
+import { cartService } from "../../services/cartService"
+import { Product } from "../../types/types"
 
 interface ProductDetailProps {
-  product: Product
-  onAddToCart?: (product: Product, quantity: number) => void
+    product: Product
+    onAddToCart?: (product: Product, quantity: number) => void
 }
 
 export const ProductDetail: React.FC<ProductDetailProps> = ({
@@ -34,21 +25,62 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
     onAddToCart,
 }) =>
 {
+    const { user, token } = useAuth()
     const [quantity, setQuantity] = React.useState(1)
     const [showNotification, setShowNotification] = React.useState(false)
     const [isExiting, setIsExiting] = React.useState(false)
+    const [error, setError] = React.useState<string | null>(null)
+    const [loading, setLoading] = React.useState(false)
 
-    const handleAddToCart = () =>
+    const handleAddToCart = async () =>
     {
-        onAddToCart?.(product, quantity)
-        setShowNotification(true)
-        setIsExiting(false)
+        setError(null)
 
-        setTimeout(() =>
-        {
-            setIsExiting(true)
-            setTimeout(() => setShowNotification(false), 300)
-        }, 2700)
+        // Validation: article vide
+        if (quantity <= 0) {
+            setError(" Article vide - Veuillez sélectionner une quantité")
+            setTimeout(() => setError(null), 3000)
+            return
+        }
+
+        // API call si authentifié
+        if (user?.id && token) {
+            setLoading(true)
+            try {
+                const cart = await cartService.getOrCreateCart(user.id)
+                await cartService.addProductToCart(cart.id, product.id)
+                
+                // Show success notification
+                onAddToCart?.(product, quantity)
+                setShowNotification(true)
+                setIsExiting(false)
+
+                setTimeout(() =>
+                {
+                    setIsExiting(true)
+                    setTimeout(() => setShowNotification(false), 300)
+                }, 2700)
+            }
+            catch (err) {
+                setError(` ${err instanceof Error ? err.message : "Erreur lors de l'ajout au panier"}`)
+                setTimeout(() => setError(null), 4000)
+            }
+            finally {
+                setLoading(false)
+            }
+        }
+        else {
+            // Fallback sans API
+            onAddToCart?.(product, quantity)
+            setShowNotification(true)
+            setIsExiting(false)
+
+            setTimeout(() =>
+            {
+                setIsExiting(true)
+                setTimeout(() => setShowNotification(false), 300)
+            }, 2700)
+        }
     }
 
     return (
@@ -75,6 +107,29 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
           }
         }
       `}</style>
+
+            {error && (
+                <Box
+                    position="fixed"
+                    top={4}
+                    right={4}
+                    bg="red.500"
+                    color="white"
+                    px={6}
+                    py={4}
+                    borderRadius="md"
+                    boxShadow="0 10px 40px rgba(0, 0, 0, 0.3)"
+                    zIndex={1000}
+                    border="2px solid"
+                    borderColor="red.600"
+                    maxW="90%"
+                    style={{
+                        animation: "slideInRight 0.3s ease-out forwards",
+                    }}
+                >
+                    <Text fontSize="sm">{error}</Text>
+                </Box>
+            )}
 
             {showNotification && (
                 <Box
@@ -218,9 +273,10 @@ export const ProductDetail: React.FC<ProductDetailProps> = ({
                                 size="lg"
                                 flex={1}
                                 onClick={handleAddToCart}
-                                disabled={product.stock === 0}
+                                disabled={product.stock === 0 || loading}
+                                loading={loading}
                             >
-                Ajouter au panier
+                                {loading ? "Ajout..." : "Ajouter au panier"}
                             </ChakraButton>
                         </HStack>
                     </VStack>

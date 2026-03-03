@@ -19,11 +19,9 @@ export const AuthPage: React.FC = () =>
     const [mode, setMode] = useState<AuthMode>("signin")
     const [error, setError] = useState<string | null>(null)
 
-    // Champs signin
     const [email, setEmail] = useState("")
     const [password, setPassword] = useState("")
 
-    // Champs signup supplémentaires
     const [firstName, setFirstName] = useState("")
     const [lastName, setLastName] = useState("")
     const [confirmPassword, setConfirmPassword] = useState("")

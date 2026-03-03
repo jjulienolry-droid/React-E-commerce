@@ -236,7 +236,7 @@ export const Profile: React.FC = () =>
                                     </Box>
                                     <Box>
                                         <Text fontWeight="bold">Email:</Text>
-                                        <Text>{email}</Text>
+                                        <Text>{profileUser?.emailAddress ?? profileUser?.email ?? "Non renseigné"}</Text>
                                     </Box>
                                 </VStack>
                             ) : (
@@ -302,11 +302,11 @@ export const Profile: React.FC = () =>
                                 <VStack gap={3} align="start">
                                     <Box>
                                         <Text fontWeight="bold">Adresse:</Text>
-                                        <Text>{addressText}</Text>
+                                        <Text>{mailingAddress?.address ?? "Non renseigné"}</Text>
                                     </Box>
                                     <Box>
                                         <Text fontWeight="bold">Type:</Text>
-                                        <Text>{addressLabel}</Text>
+                                        <Text>{mailingAddress?.label === "work" ? "Travail" : "Maison"}</Text>
                                     </Box>
                                 </VStack>
                             ) : (
